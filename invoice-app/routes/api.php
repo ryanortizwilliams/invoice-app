@@ -25,3 +25,5 @@ Route::get('/get_all_invoice', [InvoiceController::class, 'get_all_invoice']);
 
 Route::get('/search_invoice', [InvoiceController::class, 'search_invoice']);
 
+Route::get('/create_invoice', [InvoiceController::class, 'create_invoice']);
+
