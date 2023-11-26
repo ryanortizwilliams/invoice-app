@@ -9,7 +9,7 @@ onMounted(async () => {
 
 const getInvoices = async () => {
     let response = await axios.get("/api/get_all_invoice");
-    //console.log("response", response);
+    console.log("response", response);
     invoices.value = response.data.invoices;
 };
 
@@ -17,6 +17,8 @@ const search = async () => {
     let response = await axios.get(
         "/api/search_invoice?s=" + searchInvoice.value
     );
+    console.log("response", response.data.invoices);
+    invoices.value = response.data.invoices;
 };
 </script>
 <template>
@@ -64,6 +66,8 @@ const search = async () => {
                             class="table--search--input"
                             type="text"
                             placeholder="Search invoice"
+                            v-model="searchInvoice"
+                            @keyup="search()"
                         />
                     </div>
                 </div>
