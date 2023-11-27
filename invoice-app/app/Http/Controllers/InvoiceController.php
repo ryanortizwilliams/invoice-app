@@ -107,5 +107,34 @@ class InvoiceController extends Controller
         }
 
     }
+
+    public function update_invoice(Request $request, $id) {
+        $invoice = Invoice::where('id', $id)->first();
+
+        $invoice->sub_total = $request->subtotal;
+        $invoice->total = $request->total;
+        $invoice->customer_id = $request->customer_id;
+        $invoice->number = $request->number;
+        $invoice->date = $request->date;
+        $invoice->due_date = $request->due_date;
+        $invoice->discount = $request->discount;
+        $invoice->reference = $request->reference;
+        $invoice->terms_and_conditions = $request->terms_and_conditions;
+
+        $invoice->update($request->all());
+        $invoiceitem = $request->input("invoice_items");
+
+        $invoice->invoice_items()->delete();
+        
+        foreach(json_decode($invoiceitem) as $item){
+            $itemdata['product_id'] = $item->product_id;
+            $itemdata['invoice_id'] = $invoice->id;
+            $itemdata['quantity'] = $item->quantity;
+            $itemdata['unit_price'] = $item->unit_price;
+            
+            InvoiceItem::create($itemdata);
+        }
+
+    }
     
 }

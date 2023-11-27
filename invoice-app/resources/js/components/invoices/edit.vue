@@ -1,5 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 let form = ref({
     id: "",
@@ -67,6 +69,7 @@ const addCart = (item) => {
         unit_price: item.unit_price,
         quantity: item.quantity,
     };
+    //listCart.value.push(itemcart);
     form.value.invoice_items.push(itemcart);
     closeModal();
 };
@@ -84,6 +87,39 @@ const subtotal = () => {
 const grandtotal = () => {
     if (form.value.invoice_items) {
         return subtotal() - form.value.discount;
+    }
+};
+const onEdit = (id) => {
+    console.log("button works");
+    if (form.value.invoice_items.length >= 1) {
+        // alert(JSON.stringify(form.value.invoice_items));
+        let subTotal = 0;
+        subTotal = subtotal();
+
+        let total = 0;
+        total = grandtotal();
+
+        const formData = new FormData();
+        formData.append(
+            "invoice_item",
+            JSON.stringify(form.value.invoice_items)
+        );
+        formData.append("customer_id", form.value.customer_id);
+        formData.append("date", form.value.date);
+        formData.append("due_date", form.value.due_date);
+        formData.append("number", form.value.number);
+        formData.append("reference", form.value.reference);
+        formData.append("discount", form.value.discount);
+        formData.append("subtotal", subTotal);
+        formData.append("total", total);
+        formData.append(
+            "terms_and_conditions",
+            form.value.terms_and_conditions
+        );
+
+        axios.post(`/api/update_invoice/${form.value.id}`, formData);
+        form.value.invoice_items = [];
+        router.push("/");
     }
 };
 </script>
@@ -238,7 +274,9 @@ const grandtotal = () => {
             <div class="card__header" style="margin-top: 40px">
                 <div></div>
                 <div>
-                    <a class="btn btn-secondary"> Save </a>
+                    <a class="btn btn-secondary" @click="onEdit(form.id)">
+                        Save
+                    </a>
                 </div>
             </div>
         </div>
