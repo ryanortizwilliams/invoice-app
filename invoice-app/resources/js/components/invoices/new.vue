@@ -58,7 +58,7 @@ const closeModal = () => {
 
 const getproducts = async () => {
     let response = await axios.get("/api/products");
-    console.log("products", response);
+    //console.log("products", response);
     listproducts.value = response.data.products;
 };
 
