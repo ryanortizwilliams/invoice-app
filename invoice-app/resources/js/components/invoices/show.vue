@@ -1,3 +1,31 @@
+<script setup>
+import { onMounted, ref } from "vue";
+import router from "../../router";
+
+let form = ref({ id: "" });
+
+const props = defineProps({
+    id: {
+        type: String,
+        default: "",
+    },
+});
+
+onMounted(async () => {
+    getInvoice();
+});
+
+const getInvoice = async () => {
+    let response = await axios.get(`/api/show_invoice/${props.id}`);
+    console.log("form", response.data.invoice);
+    form.value = response.data.invoice;
+};
+
+const print = () => {
+    window.print();
+    router.push("/").catch(() => {});
+};
+</script>
 <template>
     <div class="container">
         <!--==================== SHOW INVOICE ====================-->
@@ -10,15 +38,15 @@
             </div>
             <div>
                 <div class="card__header--title">
-                    <h1 class="mr-2">#1043</h1>
-                    <p>July 17, 2020 at 3:28 am</p>
+                    <h1 class="mr-2">#{{ form.id }}</h1>
+                    <p>{{ form.created_at }}</p>
                 </div>
 
                 <div>
                     <ul class="card__header-list">
                         <li>
                             <!-- Select Btn Option -->
-                            <button class="selectBtnFlat">
+                            <button class="selectBtnFlat" @click="print">
                                 <i class="fas fa-print"></i>
                                 Print
                             </button>
@@ -61,24 +89,26 @@
                 <div class="invoice__header--item">
                     <div>
                         <h2>Invoice To:</h2>
-                        <p>Customer 1</p>
+                        <p v-if="form.customer">
+                            {{ form.customer.firstname }}
+                        </p>
                     </div>
                     <div>
                         <div class="invoice__header--item1">
                             <p>Invoice#</p>
-                            <span>#1200</span>
+                            <span>#{{ form.number }}</span>
                         </div>
                         <div class="invoice__header--item2">
                             <p>Date</p>
-                            <span>12/12/2022</span>
+                            <span>{{ form.date }}</span>
                         </div>
                         <div class="invoice__header--item2">
                             <p>Due Date</p>
-                            <span>12/12/2022</span>
+                            <span>{{ form.due_date }}</span>
                         </div>
                         <div class="invoice__header--item2">
                             <p>Reference</p>
-                            <span>1045</span>
+                            <span>{{ form.reference }}</span>
                         </div>
                     </div>
                 </div>
@@ -93,45 +123,16 @@
                     </div>
 
                     <!-- item 1 -->
-                    <div class="table--items3">
-                        <p>1</p>
-                        <p>Lorem Ipsum is simply dummy text</p>
-                        <p>$ 300</p>
-                        <p>1</p>
-                        <p>$ 300</p>
-                    </div>
-                    <div class="table--items3">
-                        <p class="table--items--col2">2</p>
-                        <p
-                            class="table--items--col1 table--items--transactionId3"
-                        >
-                            Lorem Ipsum is simply dummy text
-                        </p>
-                        <p class="table--items--col2">$ 300</p>
-                        <p class="table--items--col3">1</p>
-                        <p class="table--items--col5">$ 300</p>
-                    </div>
-                    <div class="table--items3">
-                        <p class="table--items--col2">3</p>
-                        <p
-                            class="table--items--col1 table--items--transactionId3"
-                        >
-                            Lorem Ipsum is simply dummy text
-                        </p>
-                        <p class="table--items--col2">$ 300</p>
-                        <p class="table--items--col3">1</p>
-                        <p class="table--items--col5">$ 300</p>
-                    </div>
-                    <div class="table--items3">
-                        <p class="table--items--col2">4</p>
-                        <p
-                            class="table--items--col1 table--items--transactionId3"
-                        >
-                            Lorem Ipsum is simply dummy text
-                        </p>
-                        <p class="table--items--col2">$ 300</p>
-                        <p class="table--items--col3">1</p>
-                        <p class="table--items--col5">$ 300</p>
+                    <div
+                        class="table--items3"
+                        v-for="(item, i) in form.invoice_items"
+                        :key="item.id"
+                    >
+                        <p>{{ i + 1 }}</p>
+                        <p>{{ item.product.desctiption }}</p>
+                        <p>{{ item.unit_price }}</p>
+                        <p>{{ item.quantity }}</p>
+                        <p>$ {{ item.unit_price * item.quantity }}</p>
                     </div>
                 </div>
 
@@ -142,11 +143,11 @@
                     <div>
                         <div class="invoice__subtotal--item1">
                             <p>Sub Total</p>
-                            <span> $ 1200</span>
+                            <span> $ {{ form.sub_total }}</span>
                         </div>
                         <div class="invoice__subtotal--item2">
                             <p>Discount</p>
-                            <span>$ 100</span>
+                            <span>${{ form.discount }} </span>
                         </div>
                     </div>
                 </div>
@@ -155,15 +156,14 @@
                     <div>
                         <h2>Terms and Conditions</h2>
                         <p>
-                            Lorem Ipsum is simply dummy text of the printing and
-                            typesetting industry.
+                            {{ form.terms_and_conditions }}
                         </p>
                     </div>
                     <div>
                         <div class="grand__total">
                             <div class="grand__total--items">
                                 <p>Grand Total</p>
-                                <span>$ 1100</span>
+                                <span>$ {{ form.total }}</span>
                             </div>
                         </div>
                     </div>
@@ -175,6 +175,7 @@
                     <a class="btn btn-secondary"> Save </a>
                 </div>
             </div>
+            <br />
         </div>
     </div>
 </template>
