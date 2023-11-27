@@ -129,7 +129,7 @@ const print = () => {
                         :key="item.id"
                     >
                         <p>{{ i + 1 }}</p>
-                        <p>{{ item.product.desctiption }}</p>
+                        <p>{{ item.product.description }}</p>
                         <p>{{ item.unit_price }}</p>
                         <p>{{ item.quantity }}</p>
                         <p>$ {{ item.unit_price * item.quantity }}</p>
