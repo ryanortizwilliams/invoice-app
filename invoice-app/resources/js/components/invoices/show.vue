@@ -17,7 +17,6 @@ onMounted(async () => {
 
 const getInvoice = async () => {
     let response = await axios.get(`/api/show_invoice/${props.id}`);
-    console.log("form", response.data.invoice);
     form.value = response.data.invoice;
 };
 
@@ -39,6 +38,10 @@ const deleteInvoice = (id) => {
         .catch((error) => {
             console.error("Error deleting invoice:", error);
         });
+};
+
+const returnHome = () => {
+    router.push("/");
 };
 </script>
 <template>
@@ -86,6 +89,14 @@ const deleteInvoice = (id) => {
                             >
                                 <i class="fas fa-pencil-alt"></i>
                                 Delete
+                            </button>
+                            <!-- End Select Btn Option -->
+                        </li>
+                        <li>
+                            <!-- Select Btn Option -->
+                            <button class="selectBtnFlat" @click="returnHome">
+                                <i class="fas fa-pencil-alt"></i>
+                                Home
                             </button>
                             <!-- End Select Btn Option -->
                         </li>

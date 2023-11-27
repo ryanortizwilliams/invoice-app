@@ -19,7 +19,6 @@ const search = async () => {
     let response = await axios.get(
         "/api/search_invoice?s=" + searchInvoice.value
     );
-    console.log("response", response.data.invoices);
     invoices.value = response.data.invoices;
 };
 

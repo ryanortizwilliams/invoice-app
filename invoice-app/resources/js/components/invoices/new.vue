@@ -23,13 +23,11 @@ onMounted(async () => {
 
 const indexForm = async () => {
     let response = await axios.get("/api/create_invoice");
-    //console.log("form", response.data);
     form.value = response.data;
 };
 
 const getAllCustomers = async () => {
     let response = await axios.get("/api/customers");
-    //console.log("response", response);
     allcustomers.value = response.data.customers;
 };
 const addCart = (item) => {
@@ -58,7 +56,6 @@ const closeModal = () => {
 
 const getproducts = async () => {
     let response = await axios.get("/api/products");
-    //console.log("products", response);
     listproducts.value = response.data.products;
 };
 

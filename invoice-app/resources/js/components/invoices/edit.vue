@@ -30,13 +30,11 @@ onMounted(async () => {
 
 const getInvoice = async () => {
     let response = await axios.get(`/api/edit_invoice/${props.id}`);
-    //console.log("form", response.data.invoice);
     form.value = response.data.invoice;
 };
 
 const getAllCustomers = async () => {
     let response = await axios.get("/api/customers");
-    //console.log("response", response);
     allcustomers.value = response.data.customers;
 };
 
@@ -57,7 +55,6 @@ const closeModal = () => {
 
 const getproducts = async () => {
     let response = await axios.get("/api/products");
-    //console.log("products", response);
     listproducts.value = response.data.products;
 };
 
@@ -69,7 +66,6 @@ const addCart = (item) => {
         unit_price: item.unit_price,
         quantity: item.quantity,
     };
-    //listCart.value.push(itemcart);
     form.value.invoice_items.push(itemcart);
     closeModal();
 };
@@ -92,7 +88,6 @@ const grandtotal = () => {
 const onEdit = (id) => {
     console.log("button works");
     if (form.value.invoice_items.length >= 1) {
-        // alert(JSON.stringify(form.value.invoice_items));
         let subTotal = 0;
         subTotal = subtotal();
 
