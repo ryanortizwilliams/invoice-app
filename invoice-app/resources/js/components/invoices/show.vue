@@ -31,8 +31,14 @@ const onEdit = (id) => {
 };
 
 const deleteInvoice = (id) => {
-    axios.get("/api/delete_invoice/" + id);
-    router.push("/");
+    axios
+        .get("/api/delete_invoice/" + id)
+        .then(() => {
+            router.push("/");
+        })
+        .catch((error) => {
+            console.error("Error deleting invoice:", error);
+        });
 };
 </script>
 <template>

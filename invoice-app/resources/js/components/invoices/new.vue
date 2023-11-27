@@ -97,9 +97,15 @@ const onSave = () => {
             form.value.terms_and_conditions
         );
 
-        axios.post("/api/add_invoice", formData);
-        listCart.value = [];
-        router.push("/");
+        axios
+            .post("/api/add_invoice", formData)
+            .then(() => {
+                listCart.value = [];
+                router.push("/");
+            })
+            .catch((error) => {
+                console.error("Error deleting invoice:", error);
+            });
     }
 };
 </script>
