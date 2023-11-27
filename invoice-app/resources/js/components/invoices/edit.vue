@@ -12,15 +12,25 @@ const props = defineProps({
     },
 });
 
+let allcustomers = ref([]);
+let customer_id = ref([]);
+
 onMounted(async () => {
-    console.log("props", props);
+    // console.log("props", props);
     getInvoice();
+    getAllCustomers();
 });
 
 const getInvoice = async () => {
     let response = await axios.get(`/api/edit_invoice/${props.id}`);
-    console.log("form", response.data.invoice);
+    //console.log("form", response.data.invoice);
     form.value = response.data.invoice;
+};
+
+const getAllCustomers = async () => {
+    let response = await axios.get("/api/customers");
+    //console.log("response", response);
+    allcustomers.value = response.data.customers;
 };
 </script>
 <template>
@@ -37,8 +47,20 @@ const getInvoice = async () => {
                 <div class="card__content--header">
                     <div>
                         <p class="my-1">Customer</p>
-                        <select name="" id="" class="input">
-                            <option value="">cust 1</option>
+                        <select
+                            name=""
+                            id=""
+                            class="input"
+                            v-model="form.customer_id"
+                        >
+                            <option disabled>Select customer</option>
+                            <option
+                                :value="customer.id"
+                                v-for="customer in allcustomers"
+                                :key="customer.id"
+                            >
+                                {{ customer.firstname }}
+                            </option>
                         </select>
                     </div>
                     <div>
@@ -48,16 +70,30 @@ const getInvoice = async () => {
                             placeholder="dd-mm-yyyy"
                             type="date"
                             class="input"
+                            v-model="form.date"
                         />
                         <!---->
                         <p class="my-1">Due Date</p>
-                        <input id="due_date" type="date" class="input" />
+                        <input
+                            id="due_date"
+                            type="date"
+                            class="input"
+                            v-model="form.due_date"
+                        />
                     </div>
                     <div>
                         <p class="my-1">Numero</p>
-                        <input type="text" class="input" />
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="form.number"
+                        />
                         <p class="my-1">Reference(Optional)</p>
-                        <input type="text" class="input" />
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="form.reference"
+                        />
                     </div>
                 </div>
                 <br /><br />
@@ -71,15 +107,33 @@ const getInvoice = async () => {
                     </div>
 
                     <!-- item 1 -->
-                    <div class="table--items2">
-                        <p>#093654 vjxhchkvhxc vkxckvjkxc jkvjxckvjkx</p>
-                        <p>
-                            <input type="text" class="input" />
+                    <div
+                        class="table--items2"
+                        v-for="(itemcart, i) in form.invoice_items"
+                        :key="itemcart.id"
+                    >
+                        <p v-if="itemcart.product">
+                            #{{ itemcart.product.item_code }}
+                            {{ itemcart.product.description }}
+                        </p>
+                        <p v-else>
+                            #{{ itemcart.item_code }} {{ itemcart.desctiption }}
                         </p>
                         <p>
-                            <input type="text" class="input" />
+                            <input
+                                type="text"
+                                class="input"
+                                v-model="itemcart.unit_price"
+                            />
                         </p>
-                        <p>$ 10000</p>
+                        <p>
+                            <input
+                                type="text"
+                                class="input"
+                                v-model="itemcart.quantity"
+                            />
+                        </p>
+                        <p>$ {{ itemcart.quantity * itemcart.unit_price }}</p>
                         <p style="color: red; font-size: 24px; cursor: pointer">
                             &times;
                         </p>
