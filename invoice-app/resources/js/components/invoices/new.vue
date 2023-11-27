@@ -1,3 +1,27 @@
+<script setup>
+import { onMounted, ref } from "vue";
+
+let form = ref([]);
+let allcustomers = ref([]);
+let customer_id = ref([]);
+
+onMounted(async () => {
+    indexForm();
+    getAllCustomers();
+});
+
+const indexForm = async () => {
+    let response = await axios.get("/api/create_invoice");
+    console.log("form", response.data);
+    form.value = response.data;
+};
+
+const getAllCustomers = async () => {
+    let response = await axios.get("/api/customers");
+    //console.log("response", response);
+    allcustomers.value = response.data.customers;
+};
+</script>
 <template>
     <div class="container">
         <!--==================== NEW INVOICE ====================-->
@@ -13,8 +37,20 @@
                 <div class="card__content--header">
                     <div>
                         <p class="my-1">Customer</p>
-                        <select name="" id="" class="input">
-                            <option value="">cust 1</option>
+                        <select
+                            name=""
+                            id=""
+                            class="input"
+                            v-model="customer_id"
+                        >
+                            <option disabled>Select customer</option>
+                            <option
+                                :value="customer.id"
+                                v-for="customer in allcustomers"
+                                :key="customer.id"
+                            >
+                                {{ customer.firstname }}
+                            </option>
                         </select>
                     </div>
                     <div>
