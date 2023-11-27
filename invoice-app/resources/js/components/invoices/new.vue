@@ -1,5 +1,8 @@
 <script setup>
+// import { stringify } from "querystring";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 let form = ref([]);
 let allcustomers = ref([]);
@@ -69,6 +72,35 @@ const subtotal = () => {
 
 const grandtotal = () => {
     return subtotal() - form.value.discount;
+};
+
+const onSave = () => {
+    if (listCart.value.length >= 1) {
+        let subTotal = 0;
+        subTotal = subtotal();
+
+        let total = 0;
+        total = grandtotal();
+
+        const formData = new FormData();
+        formData.append("invoice_item", JSON.stringify(listCart.value));
+        formData.append("customer_id", customer_id.value);
+        formData.append("date", form.value.date);
+        formData.append("due_date", form.value.due_date);
+        formData.append("number", form.value.number);
+        formData.append("reference", form.value.reference);
+        formData.append("discount", form.value.discount);
+        formData.append("subtotal", subTotal);
+        formData.append("total", total);
+        formData.append(
+            "terms_and_conditions",
+            form.value.terms_and_conditions
+        );
+
+        axios.post("/api/add_invoice", formData);
+        listCart.value = [];
+        router.push("/");
+    }
 };
 </script>
 <template>
@@ -222,7 +254,7 @@ const grandtotal = () => {
             <div class="card__header" style="margin-top: 40px">
                 <div></div>
                 <div>
-                    <a class="btn btn-secondary"> Save </a>
+                    <a class="btn btn-secondary" @click="onSave"> Save </a>
                 </div>
             </div>
         </div>
