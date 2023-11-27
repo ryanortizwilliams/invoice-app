@@ -69,6 +69,13 @@ class InvoiceController extends Controller
             'invoice' => $invoice
         ],200);
     }
+
+    public function edit_invoice($id){
+        $invoice = Invoice::with('customer', 'invoice_items.product')->find($id);
+        return response()->json([
+            'invoice' => $invoice
+        ],200);
+    }
     //post function
     public function add_invoice(Request $request) {
         $invoiceitem = $request->input("invoice_item");
