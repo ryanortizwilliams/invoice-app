@@ -15,6 +15,7 @@ let listproducts = ref([]);
 onMounted(async () => {
     indexForm();
     getAllCustomers();
+    getproducts();
 });
 
 const indexForm = async () => {
@@ -37,6 +38,11 @@ const addCart = (item) => {
         quantity: item.quantity,
     };
     listCart.value.push(itemcart);
+    closeModal();
+};
+
+const removeItem = (i) => {
+    listCart.value.splice(i, 1);
 };
 
 const openModal = () => {
@@ -49,6 +55,8 @@ const closeModal = () => {
 
 const getproducts = async () => {
     let response = await axios.get("/api/products");
+    console.log("products", response);
+    listproducts.value = response.data.products;
 };
 </script>
 <template>
@@ -152,7 +160,10 @@ const getproducts = async () => {
                             $ {{ itemcart.quantity * itemcart.unit_price }}
                         </p>
                         <p v-else></p>
-                        <p style="color: red; font-size: 24px; cursor: pointer">
+                        <p
+                            style="color: red; font-size: 24px; cursor: pointer"
+                            @click="removeItem(i)"
+                        >
                             &times;
                         </p>
                     </div>
@@ -208,10 +219,34 @@ const getproducts = async () => {
                 <hr />
                 <br />
                 <div class="modal__items">
-                    <select class="input my-1">
-                        <option value="None">None</option>
-                        <option value="None">LBC Padala</option>
-                    </select>
+                    <ul>
+                        <li
+                            v-for="(item, i) in listproducts"
+                            :key="item.id"
+                            style="
+                                display: grid;
+                                grid-template-columns: 30px 350px 15px;
+                                align-items: center;
+                                padding-bottom: 5px;
+                            "
+                        >
+                            <p>{{ i + 1 }}</p>
+                            <a href=""
+                                >{{ item.item_code }} {{ item.description }}</a
+                            >
+                            <button
+                                @click="addCart(item)"
+                                style="
+                                    border: 1px solid #e0e0e0;
+                                    width: 35px;
+                                    height: 35px;
+                                    cursor: pointer;
+                                "
+                            >
+                                +
+                            </button>
+                        </li>
+                    </ul>
                 </div>
                 <br />
                 <hr />

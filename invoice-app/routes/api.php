@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 //use the controllers for api calls
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProductController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -29,4 +30,4 @@ Route::get('/search_invoice', [InvoiceController::class, 'search_invoice']);
 Route::get('/create_invoice', [InvoiceController::class, 'create_invoice']);
 
 Route::get('/customers', [CustomerController::class, 'all_customer']);
-
+Route::get('/products', [ProductController::class, 'all_products']);
