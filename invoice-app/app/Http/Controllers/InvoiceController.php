@@ -122,7 +122,7 @@ class InvoiceController extends Controller
         $invoice->terms_and_conditions = $request->terms_and_conditions;
 
         $invoice->update($request->all());
-        $invoiceitem = $request->input("invoice_items");
+        $invoiceitem = $request->input("invoice_item");
 
         $invoice->invoice_items()->delete();
         
