@@ -76,6 +76,11 @@ class InvoiceController extends Controller
             'invoice' => $invoice
         ],200);
     }
+
+    public function delete_invoice_items($id){
+        $invoiceitem = InvoiceItem::findOrFail($id);
+        $invoiceitem->delete();
+    }
     //post function
     public function add_invoice(Request $request) {
         $invoiceitem = $request->input("invoice_item");

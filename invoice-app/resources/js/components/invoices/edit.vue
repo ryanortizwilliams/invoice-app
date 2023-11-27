@@ -32,6 +32,13 @@ const getAllCustomers = async () => {
     //console.log("response", response);
     allcustomers.value = response.data.customers;
 };
+
+const deleteInvoiceItem = (id, i) => {
+    form.value.invoice_items.splice(i, 1);
+    if (id != undefined) {
+        axios.get("/api/delete_invoice_items/" + id);
+    }
+};
 </script>
 <template>
     <div class="container">
@@ -134,7 +141,10 @@ const getAllCustomers = async () => {
                             />
                         </p>
                         <p>$ {{ itemcart.quantity * itemcart.unit_price }}</p>
-                        <p style="color: red; font-size: 24px; cursor: pointer">
+                        <p
+                            style="color: red; font-size: 24px; cursor: pointer"
+                            @click="deleteInvoiceItem(itemcart.id, i)"
+                        >
                             &times;
                         </p>
                     </div>
